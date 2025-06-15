@@ -33,25 +33,36 @@
   - 行数
   - コンテンツプレビュー（最初の1000文字）
 
-## インストール
+## セットアップ
 
-1. このリポジトリをクローン:
+まず、このリポジトリをクローンします:
 ```bash
 git clone <repository-url>
 cd ui-components-assistant
 ```
 
-2. 依存関係をインストールしてビルド:
+以下のいずれかの方法でセットアップを行います:
+
+### ローカルセットアップ
+
+依存関係をインストールしてビルドします:
 ```bash
 pnpm install
 pnpm run build
 ```
 
+### Dockerセットアップ
+
+Dockerイメージをビルドします:
+```bash
+docker build -t ui-components-assistant .
+```
+
 ## 使用方法
 
-#### 設定
+### ローカル使用の設定
 
-AIアシスタントのMCP設定ファイルに以下のような設定を追加してください:
+AIアシスタントのMCP設定ファイルに以下の設定を追加してください:
 
 ```json
 {
@@ -65,11 +76,34 @@ AIアシスタントのMCP設定ファイルに以下のような設定を追加
 }
 ```
 
-**設定詳細:**
-- `command`: サーバーを実行するコマンド
-- `args`: ビルドされたサーバースクリプトのパスと分析対象リポジトリのパスを含む配列
+### Docker使用の設定
 
-具体的な設定ファイルの場所や追加のセットアップ要件については、お使いのAIアシスタントのドキュメントを参照してください。
+AIアシスタントのMCP設定ファイルに以下の設定を追加してください:
+
+```json
+{
+  "mcpServers": {
+    "ui-components-assistant": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-v",
+        "/path/to/your/repository:/workspace",
+        "ui-components-assistant",
+        "/workspace"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+**設定詳細:**
+- `command`: サーバーを実行するコマンド（ローカルの場合は "node"、コンテナ化の場合は "docker"）
+- `args`: ビルドされたサーバースクリプトのパスと分析対象リポジトリのパスを含む配列
+- Docker使用時: リポジトリを `/workspace` にボリュームマウントし、`/workspace` をリポジトリパスとして渡します
 
 ## セキュリティ
 

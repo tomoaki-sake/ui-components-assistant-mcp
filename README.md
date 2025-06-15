@@ -33,23 +33,34 @@ Gets detailed information about a specific component file.
   - Line count
   - Content preview (first 1000 characters)
 
-## Installation
+## Setup
 
-1. Clone this repository:
+First, clone this repository:
 ```bash
 git clone <repository-url>
 cd ui-components-assistant
 ```
 
-2. Install dependencies and build:
+Choose one of the following setup methods:
+
+### Local Setup
+
+Install dependencies and build:
 ```bash
 pnpm install
 pnpm run build
 ```
 
+### Docker Setup
+
+Build Docker image:
+```bash
+docker build -t ui-components-assistant .
+```
+
 ## Usage
 
-#### Configuration
+### Local Usage Configuration
 
 Add the following configuration to your AI assistant's MCP configuration file:
 
@@ -65,11 +76,34 @@ Add the following configuration to your AI assistant's MCP configuration file:
 }
 ```
 
-**Configuration details:**
-- `command`: The command to run the server
-- `args`: Array containing the path to the built server script and the repository path to analyze
+### Docker Usage Configuration
 
-Refer to your AI assistant's documentation for the specific configuration file location and any additional setup requirements.
+Add the following configuration to your AI assistant's MCP configuration file:
+
+```json
+{
+  "mcpServers": {
+    "ui-components-assistant": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-v",
+        "/path/to/your/repository:/workspace",
+        "ui-components-assistant",
+        "/workspace"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+**Configuration details:**
+- `command`: The command to run the server (either "node" for local or "docker" for containerized)
+- `args`: Array containing the path to the built server script and the repository path to analyze
+- For Docker: Mount your repository as a volume to `/workspace` and pass `/workspace` as the repository path
 
 ## Security
 
